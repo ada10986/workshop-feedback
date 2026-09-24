@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>研習回饋單</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ====== 顏色設定：想換顏色，改這裡就好 ====== */
+:root{
+  --ink:#1f3a33;        /* 主要文字 */
+  --muted:#5e716b;      /* 次要文字 */
+  --line:#d7e2dd;       /* 線條 */
+  --paper:#fbfdfc;      /* 背景 */
+  --s1:#e6f4e7; --s1d:#2e7d32;  /* 🌱 */
+  --s2:#dff1ef; --s2d:#00695c;  /* 🌿 */
+  --s3:#e1eefa; --s3d:#1565c0;  /* 🌳 */
+  --s4:#fff5d9; --s4d:#9a5b00;  /* ✨ */
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{
+  font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+  color:var(--ink);background:var(--paper);line-height:1.7;
+  padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0);
+}
+.wrap{max-width:1080px;margin:0 auto;padding:40px 20px 80px}
+header h1{font-size:clamp(26px,4vw,34px);margin:0 0 8px;letter-spacing:.02em}
+header p{margin:0;color:var(--muted)}
+section{margin-top:48px}
+h2{font-size:22px;margin:0 0 6px}
+.hint{color:var(--muted);margin:0 0 18px;font-size:15px}
+.req{color:#b3261e;font-size:14px;margin-left:4px}
+
+/* ====== 第一部分：可點選的全圖 ====== */
+.matrix{display:grid;grid-template-columns:170px repeat(4,1fr);gap:6px}
+.head{padding:12px;border-radius:10px 10px 0 0;font-weight:700;text-align:center}
+.head.s1{background:var(--s1);color:var(--s1d)}
+.head.s2{background:var(--s2);color:var(--s2d)}
+.head.s3{background:var(--s3);color:var(--s3d)}
+.head.s4{background:var(--s4);color:var(--s4d)}
+.rowname{background:#eef3f1;border-radius:10px 0 0 10px;padding:14px;font-weight:700;display:flex;align-items:center}
+.rowname.missing{outline:2px solid #b3261e}
+.cell{position:relative;display:block;cursor:pointer;padding:14px 14px 14px 44px;border-radius:6px;
+  border:2px solid transparent;font-size:16px;transition:border-color .15s,background .15s}
+.cell input{position:absolute;opacity:0;pointer-events:none}
+.cell::before{content:"";position:absolute;left:14px;top:17px;width:20px;height:20px;border-radius:50%;
+  border:2px solid currentColor;opacity:.45;background:#fff}
+.cell.s1{--c:var(--s1d);background:color-mix(in srgb,var(--s1) 55%,#fff);color:var(--c)}
+.cell.s2{--c:var(--s2d);background:color-mix(in srgb,var(--s2) 55%,#fff);color:var(--c)}
+.cell.s3{--c:var(--s3d);background:color-mix(in srgb,var(--s3) 55%,#fff);color:var(--c)}
+.cell.s4{--c:var(--s4d);background:color-mix(in srgb,var(--s4) 55%,#fff);color:var(--c)}
+.cell span{color:var(--ink)}
+.cell .stage{display:none;font-weight:700;font-size:14px}
+.cell:hover{border-color:currentColor}
+.cell:has(input:checked){border-color:currentColor}
+.cell.s1:has(input:checked){background:var(--s1)}
+.cell.s2:has(input:checked){background:var(--s2)}
+.cell.s3:has(input:checked){background:var(--s3)}
+.cell.s4:has(input:checked){background:var(--s4)}
+.cell:has(input:checked)::before{content:"✓";opacity:1;background:var(--c);color:#fff;
+  display:grid;place-items:center;font-size:13px;font-weight:700;border-color:var(--c)}
+.cell:has(input:focus-visible){outline:3px solid var(--ink);outline-offset:2px}
+
+/* 手機：每個領域一個區塊，四個階段由上往下 */
+@media (max-width:760px){
+  .matrix{grid-template-columns:1fr;gap:8px}
+  .head{display:none}
+  .rowname{border-radius:10px;margin-top:18px;font-size:18px;background:transparent;padding:0 2px}
+  .rowname:first-of-type{margin-top:0}
+  .cell{border-radius:10px}
+  .cell .stage{display:block}
+}
+
+/* ====== 其他題目 ====== */
+.q{margin-bottom:22px}
+.q label.t{display:block;font-weight:500;margin-bottom:8px}
+textarea,input[type=text]{width:100%;font:inherit;color:var(--ink);background:#fff;
+  border:1.5px solid var(--line);border-radius:8px;padding:10px 12px}
+textarea{min-height:96px;resize:vertical}
+textarea:focus,input[type=text]:focus{outline:none;border-color:var(--s2d);box-shadow:0 0 0 3px var(--s2)}
+.sentence{display:grid;grid-template-columns:auto 1fr;gap:10px 12px;align-items:center;margin-bottom:22px}
+.sentence span{font-weight:500}
+@media (max-width:560px){.sentence{grid-template-columns:1fr;gap:4px}.sentence input{margin-bottom:10px}}
+.checks{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px}
+.checks label{display:flex;gap:10px;align-items:center;padding:10px 12px;border:1.5px solid var(--line);
+  border-radius:8px;cursor:pointer;background:#fff}
+.checks label:has(input:checked){border-color:var(--s2d);background:var(--s2)}
+.checks input{width:18px;height:18px;accent-color:var(--s2d)}
+.other{margin-top:8px}
+
+.submit{margin-top:48px;text-align:center}
+button{font:inherit;font-weight:700;font-size:18px;color:#fff;background:var(--s2d);border:none;
+  border-radius:999px;padding:14px 48px;cursor:pointer}
+button:disabled{opacity:.6;cursor:wait}
+button:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+#msg{margin-top:14px;color:#b3261e;min-height:1.7em}
+#done{display:none;text-align:center;padding:80px 20px}
+#done h2{font-size:28px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<form id="f" novalidate>
+<header>
+  <h1>研習回饋單</h1>
+  <p>謝謝你今天一起學習。填寫大約需要 5 分鐘，採匿名方式。</p>
+</header>
+
+<section>
+  <h2>一、今天，我的學習走到哪裡？<span class="req">必填</span></h2>
+  <p class="hint">請為今天的自己，在每一個領域點選最接近的位置。</p>
+  <div class="matrix" id="matrix"></div>
+</section>
+
+<section>
+  <h2>二、今天，有什麼「打開」了我的教學想像？</h2>
+  <div class="q">
+    <label class="t" for="q2a">哪一個活動、案例、一句話或一個做法，讓你停下來想了一下？</label>
+    <textarea id="q2a" name="q2a"></textarea>
+  </div>
+  <div class="q">
+    <label class="t" for="q2b">它讓我重新想到自己的哪一堂課／哪一個教學問題？</label>
+    <textarea id="q2b" name="q2b"></textarea>
+  </div>
+</section>
+
+<section>
+  <h2>三、如果把今天帶回教室……</h2>
+  <p class="hint">請完成一句話：</p>
+  <div class="sentence">
+    <span>原本，我可能會</span><input type="text" name="q3before" aria-label="原本，我可能會">
+    <span>今天之後，我想試著</span><input type="text" name="q3after" aria-label="今天之後，我想試著">
+  </div>
+  <div class="q">
+    <label class="t" for="q3first">我最想先做的一個小改變是：</label>
+    <textarea id="q3first" name="q3first" style="min-height:70px"></textarea>
+  </div>
+  <div class="q">
+    <label class="t">要真的做到這件事，我還需要：（可複選）</label>
+    <div class="checks">
+      <label><input type="checkbox" name="q3need" value="一個完整課例">一個完整課例</label>
+      <label><input type="checkbox" name="q3need" value="可以直接使用的素材">可以直接使用的素材</label>
+      <label><input type="checkbox" name="q3need" value="教學策略示範">教學策略示範</label>
+      <label><input type="checkbox" name="q3need" value="工具操作">工具操作</label>
+      <label><input type="checkbox" name="q3need" value="有人一起共備">有人一起共備</label>
+      <label><input type="checkbox" name="q3need" value="入班實作／觀課">入班實作／觀課</label>
+      <label><input type="checkbox" id="otherBox" name="q3need" value="其他">其他</label>
+    </div>
+    <input type="text" class="other" name="q3other" id="otherText" placeholder="選「其他」的話，請寫在這裡" aria-label="其他需求">
+  </div>
+</section>
+
+<section>
+  <h2>四、留一個問題，給下一次的我們</h2>
+  <div class="q">
+    <label class="t" for="q4">經過今天的學習，我反而更想弄清楚的是什麼？</label>
+    <textarea id="q4" name="q4"></textarea>
+  </div>
+</section>
+
+<div class="submit">
+  <button type="submit" id="btn">送出回饋</button>
+  <div id="msg" role="alert"></div>
+</div>
+</form>
+
+<div id="done">
+  <h2>🌱 已送出，謝謝你！</h2>
+  <p>你的回饋會幫助我們設計下一次的研習。</p>
+</div>
+
+</div>
+
+<script>
+/* ====== 步驟 4：把 Apps Script 的網址貼在引號裡 ====== */
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx7VEMbdeZ0SMCEieF-sJzV_xYPFhYSfQt4sgydus8Gv6HhLxvFi9Ny_aQKpOWr0Rg/exec";
+
+/* ====== 第一部分的內容：想改文字，改這裡就好 ====== */
+const STAGES = [
+  {cls:"s1", label:"🌱 我看見了"},
+  {cls:"s2", label:"🌿 我開始理解"},
+  {cls:"s3", label:"🌳 我想到怎麼做"},
+  {cls:"s4", label:"✨ 我準備帶回現場"}
+];
+const ROWS = [
+  {key:"p1_gender", name:"性平 × 社會領域", items:[
+    "我看見性平與社會課原來可以自然連結",
+    "我理解如何從課程內容看見不同人的處境、機會與限制",
+    "我能想到自己課程中的切入點",
+    "我已有一個想帶回課堂嘗試的做法"]},
+  {key:"p1_team", name:"地方團務 × 夥伴交流", items:[
+    "我知道不同地方團正在做什麼",
+    "我從別人的經驗看見不同可能",
+    "我找到可以調整自己團務的想法",
+    "我想帶一個做法回團內試試"]},
+  {key:"p1_tech", name:"AI × VR × 媒體識讀", items:[
+    "我看見科技可以打開不同的學習經驗",
+    "我開始思考工具與學習目標的關係",
+    "我能判斷什麼情況值得使用",
+    "我想到一個可以放進自己課程的情境"]}
+];
+
+/* 畫出可點選的全圖 */
+const m = document.getElementById("matrix");
+m.insertAdjacentHTML("beforeend", '<div></div>' + STAGES.map(s => `<div class="head ${s.cls}">${s.label}</div>`).join(""));
+ROWS.forEach(r => {
+  m.insertAdjacentHTML("beforeend", `<div class="rowname" id="name_${r.key}">${r.name}</div>` +
+    r.items.map((t,i) => `<label class="cell ${STAGES[i].cls}">
+      <input type="radio" name="${r.key}" value="${STAGES[i].label}">
+      <b class="stage">${STAGES[i].label}</b><span>${t}</span></label>`).join(""));
+});
+
+/* 打字在「其他」時自動勾選 */
+document.getElementById("otherText").addEventListener("input", e => {
+  document.getElementById("otherBox").checked = e.target.value.trim() !== "";
+});
+
+/* 送出 */
+document.getElementById("f").addEventListener("submit", async e => {
+  e.preventDefault();
+  const msg = document.getElementById("msg"), btn = document.getElementById("btn");
+  msg.textContent = "";
+
+  let missing = [];
+  ROWS.forEach(r => {
+    const el = document.getElementById("name_" + r.key);
+    const ok = document.querySelector(`input[name="${r.key}"]:checked`);
+    el.classList.toggle("missing", !ok);
+    if (!ok) missing.push(r.name);
+  });
+  if (missing.length) {
+    msg.textContent = "第一部分還沒選：" + missing.join("、");
+    document.getElementById("matrix").scrollIntoView({behavior:"smooth", block:"center"});
+    return;
+  }
+  if (!SCRIPT_URL.startsWith("https://script.google.com")) {
+    msg.textContent = "表單還沒連接試算表：請在程式碼裡貼上 Apps Script 網址。";
+    return;
+  }
+
+  const fd = new FormData(e.target);
+  const data = new URLSearchParams();
+  ["p1_gender","p1_team","p1_tech","q2a","q2b","q3before","q3after","q3first","q3other","q4"]
+    .forEach(k => data.append(k, (fd.get(k) || "").toString().trim()));
+  data.append("q3need", fd.getAll("q3need").join("、"));
+
+  btn.disabled = true; btn.textContent = "送出中…";
+  try {
+    await fetch(SCRIPT_URL, {method:"POST", mode:"no-cors", body:data});
+    document.getElementById("f").style.display = "none";
+    document.getElementById("done").style.display = "block";
+    window.scrollTo(0,0);
+  } catch (err) {
+    msg.textContent = "送出失敗：請確認網路連線後再按一次。";
+    btn.disabled = false; btn.textContent = "送出回饋";
+  }
+});
+</script>
+</body>
+</html>
