@@ -207,13 +207,6 @@ button:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
   </div>
 </section>
 
-<section>
-  <h2>四、留一個問題，給下一次的我們</h2>
-  <div class="q">
-    <label class="t" for="q4">經過今天的學習，我反而更想弄清楚的是什麼？</label>
-    <textarea id="q4" name="q4"></textarea>
-  </div>
-</section>
 
 <div class="submit">
   <button type="submit" id="btn">送出回饋</button>
@@ -331,7 +324,7 @@ document.getElementById("f").addEventListener("submit", async e => {
   pledge();
   const fd = new FormData(e.target);
   const data = new URLSearchParams();
-  ["name","county","unit","role","p1_gender","p1_team","p1_tech","q2a","q2b","q3before","q3pledge","q3other","q4"]
+  ["name","county","unit","role","p1_gender","p1_team","p1_tech","q2a","q2b","q3before","q3pledge","q3other"]
     .forEach(k => data.append(k, (fd.get(k) || "").toString().trim()));
   data.append("q3need", fd.getAll("q3need").join("、"));
 
