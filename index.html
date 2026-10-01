@@ -86,7 +86,7 @@ select:focus{outline:none;border-color:var(--s2d);box-shadow:0 0 0 3px var(--s2)
 .pledge-in{display:grid;grid-template-columns:auto 1fr;gap:10px 12px;align-items:center}
 .pledge-in label{font-weight:500;white-space:nowrap}
 @media (max-width:560px){.pledge-in{grid-template-columns:1fr;gap:4px}.pledge-in input{margin-bottom:10px}}
-.card{margin-top:22px;background:var(--s4);border:2px solid color-mix(in srgb,var(--s4d) 35%,transparent);
+.card{margin-top:16px;background:var(--s4);border:2px solid color-mix(in srgb,var(--s4d) 35%,transparent);
   border-radius:16px;padding:26px 28px 22px}
 .card-tag{font-weight:700;color:var(--s4d);font-size:15px;letter-spacing:.05em}
 .card-text{font-size:clamp(19px,2.6vw,23px);font-weight:500;line-height:1.8;margin:12px 0 18px}
@@ -172,18 +172,28 @@ button:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
 </section>
 
 <section>
-  <h2>三、如果把今天帶回教室……</h2>
-  <p class="hint">請完成一句話：</p>
-  <div class="sentence">
-    <span>原本，我可能會</span><input type="text" name="q3before" aria-label="原本，我可能會">
-    <span>今天之後，我想試著</span><input type="text" name="q3after" aria-label="今天之後，我想試著">
+  <h2>三、把今天帶回教室：我的教學宣言</h2>
+  <p class="hint">從原本的自己出發，寫下一句給自己的承諾。</p>
+  <div class="q">
+    <label class="t" for="q3before">原本，我可能會</label>
+    <input type="text" id="q3before" name="q3before" placeholder="例如：把性平當成另外要補充的議題">
   </div>
   <div class="q">
-    <label class="t" for="q3first">我最想先做的一個小改變是：</label>
-    <textarea id="q3first" name="q3first" style="min-height:70px"></textarea>
+    <label class="t">我的教學宣言</label>
+    <div class="pledge-in">
+      <label for="pw">在</label><input type="text" id="pw" placeholder="例如：這學期結束、下次研習">
+      <label for="pd">之前，我要</label><input type="text" id="pd" placeholder="例如：在一堂社會課裡，帶學生看見不同人的處境">
+      <label for="pb">因為我相信</label><input type="text" id="pb" placeholder="例如：每個孩子都該被看見">
+    </div>
+    <div class="card" aria-live="polite">
+      <div class="card-tag">✨ 我的教學宣言</div>
+      <p id="pledgeText" class="card-text"><span class="ph">你的宣言會出現在這裡</span></p>
+      <div class="card-sign"><span id="signName">＿＿＿＿</span><span id="signDate"></span></div>
+    </div>
+    <input type="hidden" name="q3pledge" id="q3pledge">
   </div>
   <div class="q">
-    <label class="t">要真的做到這件事，我還需要：（可複選）</label>
+    <label class="t">要做到這個宣言，我還需要：（可複選）</label>
     <div class="checks">
       <label><input type="checkbox" name="q3need" value="一個完整課例">一個完整課例</label>
       <label><input type="checkbox" name="q3need" value="可以直接使用的素材">可以直接使用的素材</label>
@@ -198,19 +208,11 @@ button:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
 </section>
 
 <section>
-  <h2>四、寫給自己的教學宣言</h2>
-  <p class="hint">把今天想帶回教室的決心，寫成一句給自己的宣言。下方會即時組成你的宣言卡。</p>
-  <div class="pledge-in">
-    <label for="pw">在</label><input type="text" id="pw" placeholder="例如：這學期結束、下次研習">
-    <label for="pd">之前，我要</label><input type="text" id="pd" placeholder="例如：在一堂社會課裡，帶學生看見不同人的處境">
-    <label for="pb">因為我相信</label><input type="text" id="pb" placeholder="例如：每個孩子都該被看見">
+  <h2>四、留一個問題，給下一次的我們</h2>
+  <div class="q">
+    <label class="t" for="q4">經過今天的學習，我反而更想弄清楚的是什麼？</label>
+    <textarea id="q4" name="q4"></textarea>
   </div>
-  <div class="card" aria-live="polite">
-    <div class="card-tag">✨ 我的教學宣言</div>
-    <p id="pledgeText" class="card-text"><span class="ph">你的宣言會出現在這裡</span></p>
-    <div class="card-sign"><span id="signName">＿＿＿＿</span><span id="signDate"></span></div>
-  </div>
-  <input type="hidden" name="q4" id="q4">
 </section>
 
 <div class="submit">
@@ -283,7 +285,7 @@ function pledge(){
     html = "我宣告：" + parts.map(x => esc(x[0]) + "<b>" + esc(x[1]) + "</b>" + esc(x[2])).join("");
   }
   document.getElementById("pledgeText").innerHTML = html || '<span class="ph">你的宣言會出現在這裡</span>';
-  document.getElementById("q4").value = plain;
+  document.getElementById("q3pledge").value = plain;
 }
 ["pw","pd","pb","name"].forEach(id => document.getElementById(id).addEventListener("input", pledge));
 
@@ -329,7 +331,7 @@ document.getElementById("f").addEventListener("submit", async e => {
   pledge();
   const fd = new FormData(e.target);
   const data = new URLSearchParams();
-  ["name","county","unit","role","p1_gender","p1_team","p1_tech","q2a","q2b","q3before","q3after","q3first","q3other","q4"]
+  ["name","county","unit","role","p1_gender","p1_team","p1_tech","q2a","q2b","q3before","q3pledge","q3other","q4"]
     .forEach(k => data.append(k, (fd.get(k) || "").toString().trim()));
   data.append("q3need", fd.getAll("q3need").join("、"));
 
