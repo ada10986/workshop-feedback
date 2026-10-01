@@ -74,6 +74,28 @@ h2{font-size:22px;margin:0 0 6px}
   .cell .stage{display:block}
 }
 
+/* ====== 基本資料 ====== */
+.basic{display:grid;grid-template-columns:repeat(2,1fr);gap:16px 20px}
+.basic label{display:block;font-weight:500;margin-bottom:6px}
+select{width:100%;font:inherit;color:var(--ink);background:#fff;border:1.5px solid var(--line);border-radius:8px;padding:10px 12px}
+select:focus{outline:none;border-color:var(--s2d);box-shadow:0 0 0 3px var(--s2)}
+.bad{border-color:#b3261e!important}
+@media (max-width:560px){.basic{grid-template-columns:1fr}}
+
+/* ====== 宣言 ====== */
+.pledge-in{display:grid;grid-template-columns:auto 1fr;gap:10px 12px;align-items:center}
+.pledge-in label{font-weight:500;white-space:nowrap}
+@media (max-width:560px){.pledge-in{grid-template-columns:1fr;gap:4px}.pledge-in input{margin-bottom:10px}}
+.card{margin-top:22px;background:var(--s4);border:2px solid color-mix(in srgb,var(--s4d) 35%,transparent);
+  border-radius:16px;padding:26px 28px 22px}
+.card-tag{font-weight:700;color:var(--s4d);font-size:15px;letter-spacing:.05em}
+.card-text{font-size:clamp(19px,2.6vw,23px);font-weight:500;line-height:1.8;margin:12px 0 18px}
+.card-text b{color:var(--s4d);font-weight:700}
+.card-text .ph{color:var(--muted);font-weight:400;font-size:17px}
+.card-sign{display:flex;justify-content:space-between;gap:12px;border-top:1px dashed color-mix(in srgb,var(--s4d) 40%,transparent);
+  padding-top:12px;color:var(--muted);font-size:15px}
+#signName{font-weight:700;color:var(--ink)}
+
 /* ====== 其他題目 ====== */
 .q{margin-bottom:22px}
 .q label.t{display:block;font-weight:500;margin-bottom:8px}
@@ -108,8 +130,28 @@ button:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
 <form id="f" novalidate>
 <header>
   <h1>研習回饋單</h1>
-  <p>謝謝你今天一起學習。填寫大約需要 5 分鐘，採匿名方式。</p>
+  <p>謝謝你今天一起學習。填寫大約需要 5 分鐘。</p>
 </header>
+
+<section>
+  <h2>基本資料<span class="req">必填</span></h2>
+  <div class="basic">
+    <div><label for="name">填表人</label><input type="text" id="name" name="name" autocomplete="name"></div>
+    <div><label for="county">所屬縣市</label>
+      <select id="county" name="county">
+        <option value="">請選擇</option>
+        <option>基隆市</option><option>臺北市</option><option>新北市</option><option>桃園市</option>
+        <option>新竹市</option><option>新竹縣</option><option>苗栗縣</option><option>臺中市</option>
+        <option>彰化縣</option><option>南投縣</option><option>雲林縣</option><option>嘉義市</option>
+        <option>嘉義縣</option><option>臺南市</option><option>高雄市</option><option>屏東縣</option>
+        <option>宜蘭縣</option><option>花蓮縣</option><option>臺東縣</option><option>澎湖縣</option>
+        <option>金門縣</option><option>連江縣</option>
+      </select></div>
+    <div><label for="unit">服務單位</label><input type="text" id="unit" name="unit" placeholder="例如：○○國小"></div>
+    <div><label for="role">所屬職務</label><input type="text" id="role" name="role" list="roles" placeholder="可從清單選，也可自行輸入">
+      <datalist id="roles"><option value="教師"><option value="導師"><option value="科任教師"><option value="組長"><option value="主任"><option value="校長"><option value="輔導員"></datalist></div>
+  </div>
+</section>
 
 <section>
   <h2>一、今天，我的學習走到哪裡？<span class="req">必填</span></h2>
@@ -156,11 +198,19 @@ button:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
 </section>
 
 <section>
-  <h2>四、留一個問題，給下一次的我們</h2>
-  <div class="q">
-    <label class="t" for="q4">經過今天的學習，我反而更想弄清楚的是什麼？</label>
-    <textarea id="q4" name="q4"></textarea>
+  <h2>四、寫給自己的教學宣言</h2>
+  <p class="hint">把今天想帶回教室的決心，寫成一句給自己的宣言。下方會即時組成你的宣言卡。</p>
+  <div class="pledge-in">
+    <label for="pw">在</label><input type="text" id="pw" placeholder="例如：這學期結束、下次研習">
+    <label for="pd">之前，我要</label><input type="text" id="pd" placeholder="例如：在一堂社會課裡，帶學生看見不同人的處境">
+    <label for="pb">因為我相信</label><input type="text" id="pb" placeholder="例如：每個孩子都該被看見">
   </div>
+  <div class="card" aria-live="polite">
+    <div class="card-tag">✨ 我的教學宣言</div>
+    <p id="pledgeText" class="card-text"><span class="ph">你的宣言會出現在這裡</span></p>
+    <div class="card-sign"><span id="signName">＿＿＿＿</span><span id="signDate"></span></div>
+  </div>
+  <input type="hidden" name="q4" id="q4">
 </section>
 
 <div class="submit">
@@ -215,6 +265,28 @@ ROWS.forEach(r => {
       <b class="stage">${STAGES[i].label}</b><span>${t}</span></label>`).join(""));
 });
 
+/* 宣言卡：即時組句 */
+const esc = t => t.replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const today = new Date().toLocaleDateString("zh-TW",{year:"numeric",month:"long",day:"numeric"});
+document.getElementById("signDate").textContent = today;
+function pledge(){
+  const w = pw.value.trim().replace(/(之前|以前|前)$/,""), d = pd.value.trim(), b = pb.value.trim();
+  const name = document.getElementById("name").value.trim();
+  document.getElementById("signName").textContent = name || "＿＿＿＿";
+  let plain = "", html = "";
+  if (w || d || b) {
+    const parts = [];
+    if (w) parts.push(["在", w, "之前，"]);
+    if (d) parts.push([w ? "我要" : "我要", d, b ? "，" : "。"]);
+    if (b) parts.push(["因為我相信", b, "。"]);
+    plain = "我宣告：" + parts.map(x => x.join("")).join("");
+    html = "我宣告：" + parts.map(x => esc(x[0]) + "<b>" + esc(x[1]) + "</b>" + esc(x[2])).join("");
+  }
+  document.getElementById("pledgeText").innerHTML = html || '<span class="ph">你的宣言會出現在這裡</span>';
+  document.getElementById("q4").value = plain;
+}
+["pw","pd","pb","name"].forEach(id => document.getElementById(id).addEventListener("input", pledge));
+
 /* 打字在「其他」時自動勾選 */
 document.getElementById("otherText").addEventListener("input", e => {
   document.getElementById("otherBox").checked = e.target.value.trim() !== "";
@@ -225,6 +297,17 @@ document.getElementById("f").addEventListener("submit", async e => {
   e.preventDefault();
   const msg = document.getElementById("msg"), btn = document.getElementById("btn");
   msg.textContent = "";
+
+  const BASIC = [["name","填表人"],["county","所屬縣市"],["unit","服務單位"],["role","所屬職務"]];
+  const basicMissing = BASIC.filter(([id]) => {
+    const el = document.getElementById(id), bad = !el.value.trim();
+    el.classList.toggle("bad", bad); return bad;
+  }).map(b => b[1]);
+  if (basicMissing.length) {
+    msg.textContent = "基本資料還沒填：" + basicMissing.join("、");
+    document.getElementById(BASIC.find(b => basicMissing.includes(b[1]))[0]).focus();
+    return;
+  }
 
   let missing = [];
   ROWS.forEach(r => {
@@ -243,9 +326,10 @@ document.getElementById("f").addEventListener("submit", async e => {
     return;
   }
 
+  pledge();
   const fd = new FormData(e.target);
   const data = new URLSearchParams();
-  ["p1_gender","p1_team","p1_tech","q2a","q2b","q3before","q3after","q3first","q3other","q4"]
+  ["name","county","unit","role","p1_gender","p1_team","p1_tech","q2a","q2b","q3before","q3after","q3first","q3other","q4"]
     .forEach(k => data.append(k, (fd.get(k) || "").toString().trim()));
   data.append("q3need", fd.getAll("q3need").join("、"));
 
